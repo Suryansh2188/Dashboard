@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 import { useState } from "react";
 
-const EditMethodCard = ({ method, onClose }) => {
+const EditMethodCard = ({ method, onClose, setTableData }) => {
   const [methodName, setMethodName] = useState(method?.name || "");
   const [description, setDescription] = useState(method?.description || "");
   const [sequence, setSequence] = useState(method?.sequence || "");
@@ -9,20 +9,32 @@ const EditMethodCard = ({ method, onClose }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const updatedData = {
-      name: methodName,
-      description,
-      sequence,
-      mandatory: isMandatory ? "Yes" : "No",
-    };
-    console.log("Updated Method Data:", updatedData);
-    onClose(); // Close the overlay after submission
+
+    // Retrieve current data from localStorage
+    const storedData = JSON.parse(localStorage.getItem("CommunicationMethods")) || [];
+
+    // Update the specific entry
+    const updatedData = storedData.map((entry) =>
+      entry.name === method.name // Compare using a unique identifier (e.g., name)
+        ? {
+            name: methodName,
+            description,
+            sequence,
+            mandatory: isMandatory ? "Yes" : "No",
+          }
+        : entry
+    );
+    // Save the updated data back to localStorage
+    localStorage.setItem("CommunicationMethods", JSON.stringify(updatedData));
+    setTableData(updatedData);
+    // Notify parent component and close the modal
+    onClose();
   };
 
   return (
     <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center z-50">
       <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
-        <h2 className="text-xl font-bold mb-4">Edit Method</h2>
+        <h2 className="text-xl font-bold mb-4">Edit Communication Method</h2>
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
             <label className="block text-sm font-medium mb-1" htmlFor="methodName">

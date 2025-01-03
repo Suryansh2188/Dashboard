@@ -1,4 +1,4 @@
-import { useState } from "react";
+import  { useState } from "react";
 import {
   startOfMonth,
   endOfMonth,
@@ -8,7 +8,11 @@ import {
   format,
   addMonths,
   subMonths,
+  isSameDay,
 } from "date-fns";
+
+// Import the dashboard data
+import { dashboardData } from "../lib/dummyData";
 
 const Calendar = () => {
   const [currentDate, setCurrentDate] = useState(new Date());
@@ -27,6 +31,21 @@ const Calendar = () => {
     }
     return days;
   };
+
+  // Prepare communication data for the calendar
+  const communicationMap = {};
+  dashboardData.forEach((entry) => {
+    entry.lastCommunications.forEach((comm) => {
+      const dateKey = format(new Date(comm.date), "yyyy-MM-dd");
+      if (!communicationMap[dateKey]) {
+        communicationMap[dateKey] = [];
+      }
+      communicationMap[dateKey].push({
+        company: entry.company,
+        type: comm.type,
+      });
+    });
+  });
 
   const days = getDaysInCalendar(currentDate);
 
@@ -62,28 +81,43 @@ const Calendar = () => {
 
       {/* Calendar Grid */}
       <div className="grid grid-cols-7 gap-2">
-        {days.map((day, index) => (
-          <div
-            key={index}
-            className={`p-2 rounded-lg text-center ${
-              format(day, "M") !== format(currentDate, "M")
-                ? "text-gray-400"
-                : "text-gray-800"
-            }`}
-          >
+        {days.map((day, index) => {
+          const dayKey = format(day, "yyyy-MM-dd");
+          const communications = communicationMap[dayKey] || [];
+
+          return (
             <div
-              className={`${
-                format(day, "d") === format(new Date(), "d") &&
-                format(day, "M") === format(new Date(), "M") &&
-                format(day, "yyyy") === format(new Date(), "yyyy")
-                  ? "bg-blue-200 font-bold"
-                  : "bg-gray-100"
-              } rounded-lg p-2`}
+              key={index}
+              className={`p-2 rounded-lg text-center ${
+                format(day, "M") !== format(currentDate, "M")
+                  ? "text-gray-400"
+                  : "text-gray-800"
+              }`}
             >
-              {format(day, "d")}
+              <div
+                className={`${
+                  isSameDay(day, new Date())
+                    ? "bg-blue-200 font-bold"
+                    : "bg-gray-100"
+                } rounded-lg p-2`}
+              >
+                {/* Day Number */}
+                {format(day, "d")}
+              </div>
+
+              {/* Communications on this date */}
+              {communications.map((comm, idx) => (
+                <div
+                  key={idx}
+                  className="mt-2 text-xs bg-gray-200 p-1 rounded-lg"
+                >
+                  <span className="font-bold">{comm.type}</span> -{" "}
+                  <span>{comm.company}</span>
+                </div>
+              ))}
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
     </div>
   );

@@ -3,6 +3,7 @@ import TabNavigation from "../components/common/TabNavigation";
 import BarChart from "../components/charts/BarChart";
 import PieChart from "../components/charts/PieChart";
 import LineChart from "../components/charts/LineChart";
+import ActivityLog from "../components/ActivityLogs";
 export default function Report() {
   const [selectedTab, setSelectedTab] = useState("CommunicationFrequency");
 
@@ -23,7 +24,7 @@ export default function Report() {
       {selectedTab === "CommunicationFrequency" && <BarChart />}
       {selectedTab === "EngagementEffectiveness" && <PieChart />}
       {selectedTab === "OverdueTrends" && <LineChart />}
-      {selectedTab === "ActivityLogs" && <div>Activity Logs</div>}
+      {selectedTab === "ActivityLogs" && <ActivityLog />}
     </div>
   );
 }

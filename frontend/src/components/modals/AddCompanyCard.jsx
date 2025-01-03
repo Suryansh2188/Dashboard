@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 import { useState } from "react";
 
-const AddCompanyCard = ({ onClose }) => {
+const AddCompanyCard = ({ onClose, setTableData }) => {
   const [companyName, setCompanyName] = useState("");
   const [location, setLocation] = useState("");
   const [communicationPeriodicity, setCommunicationPeriodicity] = useState("");
@@ -13,7 +13,11 @@ const AddCompanyCard = ({ onClose }) => {
       location,
       communicationPeriodicity,
     };
-    console.log("New Company Data:", newCompanyData);
+
+    const storedData = JSON.parse(localStorage.getItem("CompanyManagement"));
+    const updatedData = [...storedData, newCompanyData];
+    localStorage.setItem("CompanyManagement", JSON.stringify(updatedData));
+    setTableData(updatedData);
     onClose(); // Close the overlay after submission
   };
 
@@ -23,7 +27,10 @@ const AddCompanyCard = ({ onClose }) => {
         <h2 className="text-xl font-bold mb-4">Add Company</h2>
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
-            <label className="block text-sm font-medium mb-1" htmlFor="companyName">
+            <label
+              className="block text-sm font-medium mb-1"
+              htmlFor="companyName"
+            >
               Company Name
             </label>
             <input
@@ -36,7 +43,10 @@ const AddCompanyCard = ({ onClose }) => {
             />
           </div>
           <div className="mb-4">
-            <label className="block text-sm font-medium mb-1" htmlFor="location">
+            <label
+              className="block text-sm font-medium mb-1"
+              htmlFor="location"
+            >
               Location
             </label>
             <input

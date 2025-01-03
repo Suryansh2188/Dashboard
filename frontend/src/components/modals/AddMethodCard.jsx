@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 import { useState } from "react";
 
-const AddMethodCard = ({ onClose }) => {
+const AddMethodCard = ({ onClose, setTableData }) => {
   const [methodName, setMethodName] = useState("");
   const [description, setDescription] = useState("");
   const [sequence, setSequence] = useState("");
@@ -15,7 +15,13 @@ const AddMethodCard = ({ onClose }) => {
       sequence,
       mandatory: isMandatory ? "Yes" : "No",
     };
-    console.log("New Method Data:", newMethod);
+    // Get existing companies from localStorage
+    const storedMethods = JSON.parse(
+      localStorage.getItem("CommunicationMethods")
+    );
+    const updatedData = [...storedMethods, newMethod];
+    localStorage.setItem("CommunicationMethods", JSON.stringify(updatedData));
+    setTableData(updatedData);
     onClose(); // Close the overlay after submission
   };
 
@@ -25,7 +31,10 @@ const AddMethodCard = ({ onClose }) => {
         <h2 className="text-xl font-bold mb-4">Add Method</h2>
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
-            <label className="block text-sm font-medium mb-1" htmlFor="methodName">
+            <label
+              className="block text-sm font-medium mb-1"
+              htmlFor="methodName"
+            >
               Method Name
             </label>
             <input
@@ -38,7 +47,10 @@ const AddMethodCard = ({ onClose }) => {
             />
           </div>
           <div className="mb-4">
-            <label className="block text-sm font-medium mb-1" htmlFor="description">
+            <label
+              className="block text-sm font-medium mb-1"
+              htmlFor="description"
+            >
               Description
             </label>
             <textarea
@@ -51,7 +63,10 @@ const AddMethodCard = ({ onClose }) => {
             ></textarea>
           </div>
           <div className="mb-4">
-            <label className="block text-sm font-medium mb-1" htmlFor="sequence">
+            <label
+              className="block text-sm font-medium mb-1"
+              htmlFor="sequence"
+            >
               Sequence
             </label>
             <input

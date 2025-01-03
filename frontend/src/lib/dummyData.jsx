@@ -56,26 +56,26 @@ export const dashboardData = [
       nextDue: "12/22/2024",
       highlight: "yellow", // Due today
     },
-    // {
-    //   company: "InnoCorp",
-    //   location: "London",
-    //   lastCommunications: [
-    //     { type: "Email", date: "12/12/2024", notes: "Quarterly update" },
-    //     { type: "LinkedIn Post", date: "12/08/2024", notes: "Job posting" },
-    //   ],
-    //   nextDue: "01/05/2025",
-    //   highlight: null, // No highlight
-    // },
-    // {
-    //   company: "HealthPlus",
-    //   location: "Dubai",
-    //   lastCommunications: [
-    //     { type: "Call", date: "12/18/2024", notes: "Partnership discussion" },
-    //     { type: "Meeting", date: "12/15/2024", notes: "Follow-up" },
-    //   ],
-    //   nextDue: "12/18/2024",
-    //   highlight: "red", // Overdue
-    // },
+    {
+      company: "InnoCorp",
+      location: "London",
+      lastCommunications: [
+        { type: "Email", date: "12/12/2024", notes: "Quarterly update" },
+        { type: "LinkedIn Post", date: "12/08/2024", notes: "Job posting" },
+      ],
+      nextDue: "01/05/2025",
+      highlight: null, // No highlight
+    },
+    {
+      company: "HealthPlus",
+      location: "Dubai",
+      lastCommunications: [
+        { type: "Call", date: "12/18/2024", notes: "Partnership discussion" },
+        { type: "Meeting", date: "12/15/2024", notes: "Follow-up" },
+      ],
+      nextDue: "12/18/2024",
+      highlight: "red", // Overdue
+    },
     {
       company: "EduTech",
       location: "New York",

@@ -1,7 +1,8 @@
 /* eslint-disable react/prop-types */
 import { FaEdit, FaPlus, FaTrash } from "react-icons/fa";
 
-const Table = ({ tableName, columns, data, onAdd, onEdit, selectedTab }) => {
+const Table = ({ tableName, columns, data, onAdd, onEdit, onDelete, selectedTab }) => {
+
   return (
     <div className="overflow-x-auto">
       <div className="flex w-full justify-between mb-2">
@@ -40,7 +41,7 @@ const Table = ({ tableName, columns, data, onAdd, onEdit, selectedTab }) => {
                   >
                     <FaEdit className="w-5 h-5" />
                   </button>
-                  <button className="text-blue-600 hover:text-blue-800">
+                  <button className="text-blue-600 hover:text-blue-800" onClick={() => onDelete(row)}>
                     <FaTrash className="w-5 h-5" />
                   </button>
                 </div>

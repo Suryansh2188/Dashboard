@@ -1,28 +1,41 @@
-import { useState } from "react";
-import { dashboardData } from "../../lib/dummyData";
+import { useState, useEffect } from "react";
+import LogCommunicationCard from "../modals/LogCommunicationCard";
+import { dashboardData } from  "../../lib/dummyData"
+
 const CompanyTable = () => {
-  const [data, setData] = useState(dashboardData);
-
+  const initialData = JSON.parse(localStorage.getItem("companyData")) || dashboardData;
+  const [data, setData] = useState(initialData);
   const [selectedCompanies, setSelectedCompanies] = useState([]);
-  const [modalOpen, setModalOpen] = useState(false);
+  const [isModalOpen, setModalOpen] = useState(false);
 
-  // Handle communication performed
+  useEffect(() => {
+    // Save the data to localStorage whenever it changes
+    localStorage.setItem("companyData", JSON.stringify(data));
+  }, [data]);
+
   const handleCommunicationPerformed = () => {
     if (selectedCompanies.length > 0) {
-      return setModalOpen(true);
+      setModalOpen(true);
     } else {
-      return alert("Please select at least one company.");
+      alert("Please select at least one company.");
     }
   };
 
-  const handleModalSubmit = () => {
-    // Reset highlights and perform any desired actions
+  const handleModalSubmit = (formData) => {
     const updatedData = data.map((row) =>
       selectedCompanies.includes(row.company)
-        ? { ...row, highlight: null } // Reset highlights
+        ? {
+            ...row,
+            lastCommunications: [
+              { type: formData.type, date: formData.date, notes: formData.notes },
+              ...row.lastCommunications,
+            ],
+            highlight: null, // Reset highlights
+          }
         : row
     );
     setData(updatedData);
+    setSelectedCompanies([]); // Clear selection
     setModalOpen(false);
   };
 
@@ -37,7 +50,7 @@ const CompanyTable = () => {
   return (
     <div className="bg-white shadow rounded-lg p-4">
       <div className="w-full flex justify-between">
-        <h2 className="text-2xl font-bold  text-blue-600 mb-4">
+        <h2 className="text-2xl font-bold text-blue-600 mb-4">
           Company Communications
         </h2>
         <button
@@ -78,7 +91,7 @@ const CompanyTable = () => {
                 </div>
               </td>
               <td className="border px-4 py-2">
-                {row.lastCommunications.map((comm, idx) => (
+                {row.lastCommunications.slice(0, 5).map((comm, idx) => (
                   <div
                     key={idx}
                     className="bg-blue-100 w-fit text-center inline-flex text-blue-600 px-2 py-1 rounded-full text-sm m-1 cursor-pointer"
@@ -101,49 +114,11 @@ const CompanyTable = () => {
       </table>
 
       {/* Modal for Logging Communication */}
-      {modalOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white p-6 rounded-lg shadow-lg max-w-md w-full">
-            <h2 className="text-lg font-bold mb-4">Log Communication</h2>
-            <div className="mb-4">
-              <label className="block font-semibold mb-1">Type:</label>
-              <select className="w-full border rounded-lg px-4 py-2">
-                <option>LinkedIn Post</option>
-                <option>Email</option>
-                <option>Call</option>
-              </select>
-            </div>
-            <div className="mb-4">
-              <label className="block font-semibold mb-1">Date:</label>
-              <input
-                type="date"
-                className="w-full border rounded-lg px-4 py-2"
-              />
-            </div>
-            <div className="mb-4">
-              <label className="block font-semibold mb-1">Notes:</label>
-              <textarea
-                className="w-full border rounded-lg px-4 py-2"
-                rows="3"
-              ></textarea>
-            </div>
-            <div className="flex justify-end">
-              <button
-                className="bg-gray-300 text-gray-800 px-4 py-2 rounded-lg mr-2"
-                onClick={() => setModalOpen(false)}
-              >
-                Cancel
-              </button>
-              <button
-                className="bg-blue-600 text-white px-4 py-2 rounded-lg"
-                onClick={handleModalSubmit}
-              >
-                Submit
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      <LogCommunicationCard
+        isOpen={isModalOpen}
+        onClose={() => setModalOpen(false)}
+        onSubmit={handleModalSubmit}
+      />
     </div>
   );
 };
